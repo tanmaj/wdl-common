@@ -29,6 +29,9 @@ workflow deepvariant {
     ref_name: {
       name: "Reference name"
     }
+    output_deepvariant_phasing: {
+      name: "Phase variants with DeepVariant continuous phasing information"
+    }
     deepvariant_version: {
       name: "DeepVariant Version"
     }
@@ -62,7 +65,9 @@ workflow deepvariant {
     File ref_index
     String ref_name
 
-    String deepvariant_version = "1.9.0"
+    Boolean output_deepvariant_phasing = false
+
+    String deepvariant_version = "1.10.0-beta"
 
     Boolean gpu
 
@@ -80,17 +85,18 @@ workflow deepvariant {
 
     call deepvariant_make_examples {
       input:
-        sample_id               = sample_id,
-        aligned_bams            = aligned_bams,
-        aligned_bam_indices     = aligned_bam_indices,
-        regions_bed             = regions_bed,
-        ref_fasta               = ref_fasta,
-        ref_index               = ref_index,
-        task_start_index        = task_start_index,
-        tasks_per_shard         = tasks_per_shard,
-        total_deepvariant_tasks = total_deepvariant_tasks,
-        docker_image            = docker_image,
-        runtime_attributes      = default_runtime_attributes
+        sample_id                  = sample_id,
+        aligned_bams               = aligned_bams,
+        aligned_bam_indices        = aligned_bam_indices,
+        regions_bed                = regions_bed,
+        ref_fasta                  = ref_fasta,
+        ref_index                  = ref_index,
+        task_start_index           = task_start_index,
+        tasks_per_shard            = tasks_per_shard,
+        total_deepvariant_tasks    = total_deepvariant_tasks,
+        output_deepvariant_phasing = output_deepvariant_phasing,
+        docker_image               = docker_image,
+        runtime_attributes         = default_runtime_attributes
     }
   }
 
@@ -129,6 +135,7 @@ workflow deepvariant {
       ref_index                     = ref_index,
       ref_name                      = ref_name,
       total_deepvariant_tasks       = total_deepvariant_tasks,
+      output_deepvariant_phasing    = output_deepvariant_phasing,
       docker_image                  = docker_image,
       runtime_attributes            = default_runtime_attributes
   }
@@ -201,6 +208,7 @@ task deepvariant_make_examples {
     Int tasks_per_shard
 
     Int total_deepvariant_tasks
+    Boolean output_deepvariant_phasing
     String docker_image
 
     RuntimeAttributes runtime_attributes
@@ -214,45 +222,28 @@ task deepvariant_make_examples {
   command <<<
     set -euo pipefail
 
-    mkdir example_tfrecords nonvariant_site_tfrecords
-
-    echo "DeepVariant version: $VERSION"
+    mkdir example_tfrecords nonvariant_site_tfrecords read-phasing
 
     seq ~{task_start_index} ~{task_end_index} \
     | parallel \
       --jobs ~{tasks_per_shard} \
       --halt 2 \
       /opt/deepvariant/bin/make_examples \
-        --checkpoint /opt/models/pacbio \
-        --norealign_reads \
-        --call_small_model_examples \
-        --small_model_indel_gq_threshold "30" \
-        --small_model_snp_gq_threshold "25" \
-        --small_model_vaf_context_window_size "51" \
-        --trained_small_model_path "/opt/smallmodels/pacbio" \
-        --trim_reads_for_pileup \
-        --vsc_min_fraction_indels 0.12 \
-        --pileup_image_width 147 \
-        --track_ref_reads \
-        --phase_reads \
-        --partition_size=25000 \
-        --max_reads_per_partition=600 \
-        --alt_aligned_pileup=diff_channels \
-        --sort_by_haplotypes \
-        --parse_sam_aux_fields \
-        --min_mapping_quality=1 \
         --mode calling \
         --ref ~{ref_fasta} \
-        ~{if defined(regions_bed) then "--regions " + regions_bed else ""} \
         --reads ~{sep="," aligned_bams} \
         --examples example_tfrecords/make_examples.tfrecord@~{total_deepvariant_tasks}.gz \
         --gvcf nonvariant_site_tfrecords/gvcf.tfrecord@~{total_deepvariant_tasks}.gz \
+        ~{if defined(regions_bed) then "--regions " + regions_bed else ""} \
+        ~{if (output_deepvariant_phasing) then "--output_phase_info=true" else ""} \
+        ~{if (output_deepvariant_phasing) then "--output_local_read_phasing=read-phasing/read-phasing_debug@~{total_deepvariant_tasks}.tsv" else ""} \
+        --checkpoint /opt/models/pacbio \
         --task {}
 
     tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.example_tfrecords.tar.gz example_tfrecords \
     && rm --recursive --force --verbose example_tfrecords
-    tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.nonvariant_site_tfrecords.tar.gz nonvariant_site_tfrecords \
-    && rm --recursive --force --verbose nonvariant_site_tfrecords
+    tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.nonvariant_site_tfrecords.tar.gz nonvariant_site_tfrecords read-phasing \
+    && rm --recursive --force --verbose nonvariant_site_tfrecords read-phasing
   >>>
 
   output {
@@ -325,8 +316,6 @@ task deepvariant_call_variants_cpu {
     while read -r tfrecord_tar || [[ -n "${tfrecord_tar}" ]]; do
       tar --no-same-owner --gzip --extract --verbose --file "${tfrecord_tar}"
     done < ~{write_lines(example_tfrecord_tars)}
-
-    echo "DeepVariant version: $VERSION"
 
     /opt/deepvariant/bin/call_variants \
       --writer_threads ~{writer_threads} \
@@ -409,8 +398,6 @@ task deepvariant_call_variants_gpu {
       tar --no-same-owner --gzip --extract --verbose --file "${tfrecord_tar}"
     done < ~{write_lines(example_tfrecord_tars)}
 
-    echo "DeepVariant version: $VERSION"
-
     /opt/deepvariant/bin/call_variants \
       --writer_threads ~{writer_threads} \
       --outfile call_variants_output.tfrecord.gz \
@@ -475,6 +462,9 @@ task deepvariant_postprocess_variants {
     total_deepvariant_tasks: {
       name: "Total DeepVariant tasks"
     }
+    output_deepvariant_phasing: {
+      name: "Phase variants with DeepVariant continuous phasing information"
+    }
     docker_image: {
       name: "Docker image URL"
     }
@@ -506,6 +496,7 @@ task deepvariant_postprocess_variants {
     String ref_name
 
     Int total_deepvariant_tasks
+    Boolean output_deepvariant_phasing
     String docker_image
 
     RuntimeAttributes runtime_attributes
@@ -528,16 +519,15 @@ task deepvariant_postprocess_variants {
       tar --no-same-owner --gzip --extract --verbose --file "${nonvariant_site_tfrecord_tar}"
     done < ~{write_lines(nonvariant_site_tfrecord_tars)}
 
-    echo "DeepVariant version: $VERSION"
-
     /opt/deepvariant/bin/postprocess_variants \
       --cpus ~{threads} \
       --vcf_stats_report=false \
       --ref ~{ref_fasta} \
       --infile call_variants_output.tfrecord.gz \
-      --outfile ~{sample_id}.~{ref_name}.small_variants.vcf.gz \
       --small_model_cvo_records "example_tfrecords/make_examples_call_variant_outputs.tfrecord@~{total_deepvariant_tasks}.gz" \
       --nonvariant_site_tfrecord_path "nonvariant_site_tfrecords/gvcf.tfrecord@~{total_deepvariant_tasks}.gz" \
+      ~{if (output_deepvariant_phasing) then "--phased_reads_input_path=read-phasing/read-phasing_debug@~{total_deepvariant_tasks}.tsv" else ""} \
+      --outfile ~{sample_id}.~{ref_name}.small_variants.vcf.gz \
       --gvcf_outfile ~{sample_id}.~{ref_name}.small_variants.g.vcf.gz
 
     # Filter for only PASS variants
@@ -554,7 +544,7 @@ task deepvariant_postprocess_variants {
       ~{sample_id}.~{ref_name}.small_variants.vcf.gz
 
     rm --verbose call_variants_output*.tfrecord.gz \
-    && rm --recursive --force --verbose nonvariant_site_tfrecords example_tfrecords
+    && rm --recursive --force --verbose nonvariant_site_tfrecords example_tfrecords read-phasing
   >>>
 
   output {

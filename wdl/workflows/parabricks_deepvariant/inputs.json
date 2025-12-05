@@ -1,0 +1,19 @@
+{
+  "parabricks_deepvariant.sample_id": "String",
+  "parabricks_deepvariant.aligned_bam": "File",
+  "parabricks_deepvariant.aligned_bam_index": "File",
+  "parabricks_deepvariant.regions_bed": "File? (optional)",
+  "parabricks_deepvariant.ref_fasta": "File",
+  "parabricks_deepvariant.ref_index": "File",
+  "parabricks_deepvariant.ref_name": "String",
+  "parabricks_deepvariant.parabricks_version": "String (optional, default = \"4.6.0-2\")",
+  "parabricks_deepvariant.default_runtime_attributes": {
+    "max_retries": "Int",
+    "container_registry": "String",
+    "gpuType": "String",
+    "backend": "String",
+    "preemptible_tries": "Int",
+    "zones": "String",
+    "cpuPlatform": "String"
+  }
+}

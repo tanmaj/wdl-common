@@ -71,7 +71,7 @@ task mitorsaw {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/mitorsaw@sha256:d0e47fb84e6e962f01a754d1052a24e550694646c0d4afb056c0e3fd7ace7a0d"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -80,5 +80,9 @@ task mitorsaw {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }

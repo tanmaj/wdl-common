@@ -205,7 +205,7 @@ task split_input_bam {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pbtk@sha256:67cd438ed9f343f90f058108170ddbff8fb1d9b5c193f4016be42b737ee2e73c"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -214,6 +214,10 @@ task split_input_bam {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 32
+    runtime_minutes: 1200
   }
 }
 
@@ -306,7 +310,7 @@ task pbmm2_align_wgs {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pbmm2@sha256:5f3f4d1f5dbea5cd4c388ee26b2fecbbb7dbcef449343633e039dca3d3725859"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -315,5 +319,9 @@ task pbmm2_align_wgs {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 32
+    runtime_minutes: 1200
   }
 }

@@ -82,7 +82,7 @@ task paraphase {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/paraphase@sha256:a114ac5b9a682d7dc0fdf25c92cfb36f80c07ab4f1fb76b2e58092521b123a4d"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -90,5 +90,9 @@ task paraphase {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }

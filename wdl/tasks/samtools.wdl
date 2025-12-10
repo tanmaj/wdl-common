@@ -58,7 +58,7 @@ task samtools_merge {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -67,6 +67,10 @@ task samtools_merge {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -116,7 +120,7 @@ task samtools_fasta {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -125,6 +129,10 @@ task samtools_fasta {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -199,7 +207,7 @@ task subset_reference {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -208,6 +216,10 @@ task subset_reference {
     awsBatchRetryAttempts: runtime_attributes.max_retries
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -290,7 +302,7 @@ task subset_bam {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -299,6 +311,10 @@ task subset_bam {
     awsBatchRetryAttempts: runtime_attributes.max_retries
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -359,7 +375,7 @@ task samtools_reset {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -368,5 +384,9 @@ task samtools_reset {
     awsBatchRetryAttempts: runtime_attributes.max_retries
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }

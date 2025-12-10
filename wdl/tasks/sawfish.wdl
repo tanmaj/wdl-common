@@ -127,7 +127,7 @@ task sawfish_discover {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/sawfish@sha256:18ba096219fea38d6b32f5706fb794a05cc5d1d6cc16e2a09e3a13d62d8181d4"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -136,6 +136,10 @@ task sawfish_discover {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -315,7 +319,7 @@ task sawfish_call {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/sawfish@sha256:18ba096219fea38d6b32f5706fb794a05cc5d1d6cc16e2a09e3a13d62d8181d4"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -324,5 +328,9 @@ task sawfish_call {
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
     cpuPlatform: runtime_attributes.cpuPlatform
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }

@@ -261,7 +261,7 @@ task deepvariant_make_examples {
 
   runtime {
     docker: docker_image
-    cpu: tasks_per_shard
+    #cpu: tasks_per_shard
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -269,6 +269,10 @@ task deepvariant_make_examples {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 32
+    runtime_minutes: 1200
   }
 }
 
@@ -357,7 +361,7 @@ task deepvariant_call_variants_cpu {
 
   runtime {
     docker: docker_image
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -365,6 +369,10 @@ task deepvariant_call_variants_cpu {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 32
+    runtime_minutes: 1200
   }
 }
 
@@ -453,7 +461,7 @@ task deepvariant_call_variants_gpu {
 
   runtime {
     docker: docker_image
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -467,6 +475,10 @@ task deepvariant_call_variants_gpu {
     acceleratorCount: 1  # !UnknownRuntimeKey
     acceleratorType: runtime_attributes.gpuType  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 32
+    runtime_minutes: 1200
   }
 }
 
@@ -582,7 +594,7 @@ task deepvariant_postprocess_variants {
 
   runtime {
     docker: docker_image
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -590,5 +602,9 @@ task deepvariant_postprocess_variants {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 32
+    runtime_minutes: 1200
   }
 }

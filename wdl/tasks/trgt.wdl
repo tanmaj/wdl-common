@@ -136,7 +136,7 @@ task trgt {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/trgt@sha256:0284ff5756f8d47d9d81b515b8b1a6c81fac862ae5a7b4fe89f65235c3e5e0c9"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -144,6 +144,10 @@ task trgt {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -218,7 +222,7 @@ task trgt_merge {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/trgt@sha256:0284ff5756f8d47d9d81b515b8b1a6c81fac862ae5a7b4fe89f65235c3e5e0c9"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -226,6 +230,10 @@ task trgt_merge {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }
 
@@ -286,7 +294,7 @@ task coverage_dropouts {
 
   runtime {
     docker: "~{runtime_attributes.container_registry}/trgt@sha256:0284ff5756f8d47d9d81b515b8b1a6c81fac862ae5a7b4fe89f65235c3e5e0c9"
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GB"
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
@@ -294,5 +302,9 @@ task coverage_dropouts {
     maxRetries: runtime_attributes.max_retries
     awsBatchRetryAttempts: runtime_attributes.max_retries
     zones: runtime_attributes.zones
+
+    requested_memory_mb_per_core: 1000
+    cpu: 16
+    runtime_minutes: 1200
   }
 }

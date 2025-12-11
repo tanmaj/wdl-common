@@ -138,7 +138,7 @@ task sawfish_discover {
     cpuPlatform: runtime_attributes.cpuPlatform
 
     requested_memory_mb_per_core: 1000
-    cpu: 16
+    cpu: 32
     runtime_minutes: 1200
   }
 }
@@ -330,7 +330,7 @@ task sawfish_call {
     cpuPlatform: runtime_attributes.cpuPlatform
 
     requested_memory_mb_per_core: 1000
-    cpu: 16
+    cpu: 32
     runtime_minutes: 1200
   }
 }

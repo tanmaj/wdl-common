@@ -452,9 +452,10 @@ task deepvariant_call_variants_gpu {
     cpuPlatform: runtime_attributes.cpuPlatform
 
     requested_memory_mb_per_core: 1000
-    cpu: 32
+    #cpu: 32
     runtime_minutes: 1200
     queue: "gpu"
+    gpu: 8
   }
 }
 

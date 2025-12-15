@@ -436,26 +436,26 @@ task deepvariant_call_variants_gpu {
 
   runtime {
     docker: docker_image
-    #cpu: threads
+    cpu: threads
     memory: mem_gb + " GiB"
-    disk: disk_size + " GB"
-    disks: "local-disk " + disk_size + " HDD"
-    bootDiskSizeGb: 30  # !UnknownRuntimeKey
-    preemptible: runtime_attributes.preemptible_tries
-    maxRetries: runtime_attributes.max_retries
-    awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
-    gpuCount: 1
-    gpuType: runtime_attributes.gpuType
-    acceleratorCount: 1  # !UnknownRuntimeKey
-    acceleratorType: runtime_attributes.gpuType  # !UnknownRuntimeKey
-    zones: runtime_attributes.zones
-    cpuPlatform: runtime_attributes.cpuPlatform
+    #disk: disk_size + " GB"
+    #disks: "local-disk " + disk_size + " HDD"
+    #bootDiskSizeGb: 30  # !UnknownRuntimeKey
+    #preemptible: runtime_attributes.preemptible_tries
+    #maxRetries: runtime_attributes.max_retries
+    #awsBatchRetryAttempts: runtime_attributes.max_retries  # !UnknownRuntimeKey
+    #gpuCount: 1
+    #gpuType: runtime_attributes.gpuType
+    #acceleratorCount: 1  # !UnknownRuntimeKey
+    #acceleratorType: runtime_attributes.gpuType  # !UnknownRuntimeKey
+    #zones: runtime_attributes.zones
+    #cpuPlatform: runtime_attributes.cpuPlatform
 
     requested_memory_mb_per_core: 1000
     #cpu: 32
     runtime_minutes: 1200
     queue: "gpu"
-    gpu: 8
+    gpu: 1
   }
 }
 

@@ -436,7 +436,7 @@ task deepvariant_call_variants_gpu {
 
   runtime {
     docker: docker_image
-    cpu: threads
+    #cpu: threads
     memory: mem_gb + " GiB"
     #disk: disk_size + " GB"
     #disks: "local-disk " + disk_size + " HDD"
@@ -452,7 +452,7 @@ task deepvariant_call_variants_gpu {
     #cpuPlatform: runtime_attributes.cpuPlatform
 
     requested_memory_mb_per_core: 1000
-    #cpu: 32
+    cpu: 32
     runtime_minutes: 1200
     queue: "gpu"
     gpu: 1

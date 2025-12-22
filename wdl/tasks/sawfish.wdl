@@ -139,7 +139,7 @@ task sawfish_discover {
 
     requested_memory_mb_per_core: 2000
     cpu: 64
-    runtime_minutes: 1200
+    runtime_minutes: 180
   }
 }
 
@@ -331,6 +331,6 @@ task sawfish_call {
 
     requested_memory_mb_per_core: 1000
     cpu: 64
-    runtime_minutes: 1200
+    runtime_minutes: 180
   }
 }

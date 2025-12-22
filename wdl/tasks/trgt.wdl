@@ -333,6 +333,6 @@ task coverage_dropouts {
 
     requested_memory_mb_per_core: 1000
     cpu: 16
-    runtime_minutes: 1200
+    runtime_minutes: 120
   }
 }

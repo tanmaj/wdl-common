@@ -217,7 +217,7 @@ task split_input_bam {
 
     requested_memory_mb_per_core: 1000
     cpu: 32
-    runtime_minutes: 1200
+    runtime_minutes: 120
   }
 }
 
@@ -322,6 +322,6 @@ task pbmm2_align_wgs {
 
     requested_memory_mb_per_core: 1000
     cpu: 64
-    runtime_minutes: 1200
+    runtime_minutes: 240
   }
 }

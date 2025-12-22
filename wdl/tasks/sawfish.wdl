@@ -137,7 +137,7 @@ task sawfish_discover {
     #zones: runtime_attributes.zones
     #cpuPlatform: runtime_attributes.cpuPlatform
 
-    requested_memory_mb_per_core: 1000
+    requested_memory_mb_per_core: 2000
     cpu: 64
     runtime_minutes: 1200
   }

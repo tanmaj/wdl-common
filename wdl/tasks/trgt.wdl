@@ -154,9 +154,9 @@ task trgt {
     File   bam_index            = "~{out_prefix}.trgt.spanning.sorted.bam.bai"
     File   vcf                  = "~{out_prefix}.trgt.sorted.vcf.gz"
     File   vcf_index            = "~{out_prefix}.trgt.sorted.vcf.gz.tbi"
-    String stat_genotyped_count = read_string("genotyped_count.txt")
-    String stat_uncalled_count  = read_string("uncalled_count.txt")
-    Array[String] msg           = read_lines("messages.txt")
+    #String stat_genotyped_count = read_string("genotyped_count.txt")
+    #String stat_uncalled_count  = read_string("uncalled_count.txt")
+    #Array[String] msg           = read_lines("messages.txt")
   }
 
   runtime {
